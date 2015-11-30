@@ -12,15 +12,13 @@ public class GameRenderer implements Runnable{
 
 	protected final GameCore core; 
 	protected final ImageLoader imageLoader = new ImageLoader();
-	protected final BufferStrategy bufferStrategy;
 	
 	protected final RenderSystem renderSystem;
 	
-	public GameRenderer(GameCore core, BufferStrategy bufferStrategy) {
+	public GameRenderer(GameCore core) {
 		this.core = core;
 		this.renderSystem = new RenderSystem(imageLoader);
 		core.getSystemManager().register(renderSystem);
-		this.bufferStrategy = bufferStrategy;
 	}
 	
 	public void render(Graphics2D gg, long timestampPast, long timestampCurrent) {

@@ -40,29 +40,26 @@ public class MainFrame extends JFrame implements Runnable {
         frame.setTitle("SpaceShoot");
         frame.setUndecorated(true);
         frame.setIgnoreRepaint(true);//we run at a regular redraw, so ignore repaint requests outside of that
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         device.setFullScreenWindow(frame); //will also make visible
         
         if (frame.getSize().width < 1024 || frame.getSize().height < 768) {
         	throw new RuntimeException("Must be at least 1024x768 resolution");
         }
+
+        frame.createBufferStrategy(2);
+
+        frame.core = GameCore.create();
+		frame.renderer = new GameRenderer(frame.core);
+		
+        frame.core.start();
         
         EventQueue.invokeLater(frame);
     }
     
     public void run() {
+    	long timeStart = System.nanoTime();
     	//System.out.println("MainFrame.run()");
-    	
-    	if (!setupDone) {
-
-            this.createBufferStrategy(2);
-
-            core = GameCore.create();
-    		renderer = new GameRenderer(core, this.getBufferStrategy());
-    		
-            core.start();
-            
-            setupDone = true;
-    	}
 
         BufferStrategy bufferStrategy = this.getBufferStrategy();
         Graphics g = null;
@@ -87,7 +84,6 @@ public class MainFrame extends JFrame implements Runnable {
             
             //flip to next buffer
             bufferStrategy.show();
-            System.out.println("FRAME");
         } finally {
 	        //ensure cleanup
 	        if (g != null) {
@@ -97,5 +93,10 @@ public class MainFrame extends JFrame implements Runnable {
         }
 
 		core.getExecutor().execute(this);
+
+    	long timeEnd = System.nanoTime();
+    	long interval = timeEnd-timeStart;
+    	int fps = (int) (1000000000/interval);
+        System.out.println("FRAME ("+fps+"fps)");
     }
 }

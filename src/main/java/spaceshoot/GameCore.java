@@ -29,8 +29,8 @@ public class GameCore implements Runnable, AutoCloseable {
 		moveSystem = new MoveSystem();
 		entitySystemManager.register(moveSystem);
 		timestampCurrent = System.nanoTime();
-		timestampPast = timestampCurrent - 1000000/30; //estimate
-		timestampFuture = timestampCurrent + 1000000/30; //estimate
+		timestampPast = timestampCurrent - 1000000000/30; //estimate
+		timestampFuture = timestampCurrent + 1000000000/30; //estimate
 	}
 	
 	
@@ -66,13 +66,19 @@ public class GameCore implements Runnable, AutoCloseable {
 	 * that simulates one simulation step
 	 */
 	public void run() {
+    	long timeStart = System.nanoTime();
 		timestampPast = timestampCurrent;
 		timestampCurrent = System.nanoTime();
-		timestampFuture = timestampCurrent + 1000000/30; //estimate
+		timestampFuture = timestampCurrent + 1000000000/30; //estimate
 		
 		moveSystem.processAll();
 
-        System.out.println("SIM");
+    	long timeEnd = System.nanoTime();
+    	long interval = timeEnd-timeStart;
+    	int fps = (int) (1000000000/interval);
+        System.out.println("SIM ("+fps+"fps)");
+        System.out.println("current time :"+timestampCurrent);
+        System.out.println("future time  :"+timestampFuture);
 	}
 
 	
@@ -85,7 +91,7 @@ public class GameCore implements Runnable, AutoCloseable {
 		
 		//hardcode 30 updates per second for now
 		//these can't overlap if they overrun
-		executor.scheduleAtFixedRate(this, 0, 1000/30, TimeUnit.MILLISECONDS);
+		executor.scheduleAtFixedRate(this, 0, 1000000000/30, TimeUnit.NANOSECONDS);
 	}
 	
 	public void close() {
