@@ -6,13 +6,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import spaceshoot.entity.EntitySystemManager;
 import spaceshoot.entity.entities.EnemyShip;
 import spaceshoot.entity.systems.MoveSystem;
 
-public class GameCore implements Runnable, AutoCloseable {
-	
-	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+public class GameCore {
 	
 	protected final EntitySystemManager entitySystemManager = new EntitySystemManager();
 	
@@ -23,14 +24,17 @@ public class GameCore implements Runnable, AutoCloseable {
 	protected Long timestampPast;
 	protected Long timestampCurrent;
 	protected Long timestampFuture;
+	public final Long FRAMEINTERVALNANO = 100000000L / 30;
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 	
 	
 	private GameCore() {
 		moveSystem = new MoveSystem();
 		entitySystemManager.register(moveSystem);
 		timestampCurrent = System.nanoTime();
-		timestampPast = timestampCurrent - 1000000000/30; //estimate
-		timestampFuture = timestampCurrent + 1000000000/30; //estimate
+		timestampPast = timestampCurrent - FRAMEINTERVALNANO; //estimate
+		timestampFuture = timestampCurrent + FRAMEINTERVALNANO; //estimate
 	}
 	
 	
@@ -38,7 +42,7 @@ public class GameCore implements Runnable, AutoCloseable {
 		return playerRect; //TODO return an unmodifiable copy
 	}
 
-	public EntitySystemManager getSystemManager() {
+	public EntitySystemManager getEntitySystemManager() {
 		return entitySystemManager;
 	}
 
@@ -56,49 +60,28 @@ public class GameCore implements Runnable, AutoCloseable {
 		return timestampFuture;
 	}
 
-	public ScheduledExecutorService getExecutor() {
-		return executor;
-	}
-
 
 	/**
 	 * Implementation of the Runnable interface
 	 * that simulates one simulation step
 	 */
-	public void run() {
+	public void run(long timestampSimStart) {
     	long timeStart = System.nanoTime();
+    	
 		timestampPast = timestampCurrent;
-		timestampCurrent = System.nanoTime();
-		timestampFuture = timestampCurrent + 1000000000/30; //estimate
+		timestampCurrent = timestampSimStart;
+		timestampFuture = timestampSimStart + FRAMEINTERVALNANO; //estimate
 		
 		moveSystem.processAll();
 
     	long timeEnd = System.nanoTime();
     	long interval = timeEnd-timeStart;
-    	int fps = (int) (1000000000/interval);
-        System.out.println("SIM ("+fps+"fps)");
-        System.out.println("current time :"+timestampCurrent);
-        System.out.println("future time  :"+timestampFuture);
+    	int fps = (int) (1000000000L/interval);
+        log.trace("SIM ("+fps+"fps)");
+        log.trace("past time    :"+timestampPast);
+        log.trace("current time :"+timestampCurrent);
+        log.trace("future time  :"+timestampFuture);
 	}
-
-	
-	public void start() {
-		timestampPast = System.nanoTime();
-		
-
-		//create some dummy enemies for testing
-		EnemyShip.create(entitySystemManager, "baddie", 500,50, 27,21 , -1, 0);
-		
-		//hardcode 30 updates per second for now
-		//these can't overlap if they overrun
-		executor.scheduleAtFixedRate(this, 0, 1000000000/30, TimeUnit.NANOSECONDS);
-	}
-	
-	public void close() {
-		//Force shutdown now of child threads
-		executor.shutdownNow();
-	}
-	
 	
 	public static GameCore create() {
 		return new GameCore();
