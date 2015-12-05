@@ -1,6 +1,6 @@
 package spaceshoot.entity.facets;
 
-public interface Position2DInt {
+public interface Position2DInt extends Facet {
 
 	public int getX();
 	public void setX(int x);

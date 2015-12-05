@@ -18,6 +18,7 @@ public class EnemyShip implements Renderable, Move2DInt {
 	protected int futureY;
 	protected int speedX;
 	protected int speedY;
+	protected boolean deleted = false;
 	
 	private EnemyShip() {
 		
@@ -124,6 +125,14 @@ public class EnemyShip implements Renderable, Move2DInt {
 	@Override
 	public String getImageName() {
 		return imageName;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	public static EnemyShip create(EntitySystemManager entitySystemManager, String imageName, int x, int y, int width, int height, int speedX, int speedY) {

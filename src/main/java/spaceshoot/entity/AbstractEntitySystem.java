@@ -49,8 +49,12 @@ public abstract class AbstractEntitySystem<T> {
 	}
 		
 	public void processAll() {
+		List<T> deleted = new ArrayList<>();
 		for (T t : entities) {
 			process(t);
+		}
+		for (T t : deleted) {
+			deregister(t);
 		}
 	}
 	
