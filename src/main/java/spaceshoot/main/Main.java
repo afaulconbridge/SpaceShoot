@@ -88,6 +88,9 @@ public class Main {
 	            //call the game renderer to do the heavy drawing
 	            renderer.render(gg2, timeStepStart);
 	            
+	            //make sure we dispose of the nested grapics every frame
+	            gg2.dispose();
+	            
 	            //flip to next buffer
 	            bufferStrategy.show();
 	        } finally {
