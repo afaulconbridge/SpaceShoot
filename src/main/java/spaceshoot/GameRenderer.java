@@ -20,7 +20,6 @@ public class GameRenderer {
 	protected final RenderSystem renderSystem;
 	
     private Logger log = LoggerFactory.getLogger(getClass());
-
 	
 	public GameRenderer(GameCore core) {
 		this.core = core;
@@ -36,7 +35,6 @@ public class GameRenderer {
 		gg.drawRect(0,0, 1023, 767);
 		
 		renderSystem.setGraphics2D(gg);
-		renderSystem.setTimestampPast(core.getTimestampPast());
 		renderSystem.setTimestampCurrent(core.getTimestampCurrent());
 		renderSystem.setTimestampFuture(core.getTimestampFuture());
 		renderSystem.setTimestampNow(timestampRenderStart);
@@ -48,11 +46,11 @@ public class GameRenderer {
 		Image playerImage = imageLoader.getImageVolatile("player");
 		gg.drawImage(playerImage, core.playerRect.x, core.playerRect.y, null);
     	
-		long timeEnd = System.nanoTime();
-    	long interval = timeEnd-timeStart;
-    	int fps = (int) (1000000000L/interval);
-        log.trace("RENDER ("+fps+"fps) ("+(interval/1000)+"ms)");
-        log.trace("start time    :"+timestampRenderStart);
+		//long timeEnd = System.nanoTime();
+    	//long interval = timeEnd-timeStart;
+    	//int fps = (int) (1000000000L/interval);
+        //log.trace("RENDER ("+fps+"fps) ("+(interval/1000)+"ms)");
+        //log.trace("start time    :"+timestampRenderStart);
 	}
 
 }

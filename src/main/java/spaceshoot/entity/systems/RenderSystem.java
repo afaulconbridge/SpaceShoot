@@ -17,7 +17,6 @@ public class RenderSystem extends AbstractEntitySystem<Renderable> {
 	protected Graphics2D gg;
 	protected ImageLoader imageLoader;
 	
-	protected Long timestampPast;
 	protected Long timestampCurrent;
 	protected Long timestampFuture;
 	protected Long timestampNow;
@@ -32,15 +31,7 @@ public class RenderSystem extends AbstractEntitySystem<Renderable> {
 		this.gg = gg;
 	}
 	
-	public void setTimestampPast(Long timestampPast) {
-		if (timestampCurrent != null && timestampPast > timestampCurrent) 
-			throw new IllegalArgumentException("timestampPast must be before timestampCurrent ("+timestampPast+" vs"+timestampCurrent+")");
-		this.timestampPast = timestampPast;
-	}
-
 	public void setTimestampCurrent(Long timestampCurrent) {
-		if (timestampPast != null && timestampCurrent < timestampPast) 
-			throw new IllegalArgumentException("timestampCurrent must be after timestampPast ("+timestampCurrent+" vs"+timestampPast+")");
 		this.timestampCurrent = timestampCurrent;
 	}
 	
@@ -50,8 +41,6 @@ public class RenderSystem extends AbstractEntitySystem<Renderable> {
 	}
 
 	public void setTimestampNow(Long timestampNow) {
-		if (timestampPast != null && timestampNow < timestampPast) 
-			throw new IllegalArgumentException("timestampNow must be after timestampPast ("+timestampNow+" vs"+timestampPast+")");
 //		if (timestampCurrent != null && timestampNow > timestampCurrent) 
 //			throw new IllegalArgumentException("timestampNow must be before timestampCurrent ("+timestampNow+" vs"+timestampCurrent+")");
 		this.timestampNow = timestampNow;
@@ -74,11 +63,10 @@ public class RenderSystem extends AbstractEntitySystem<Renderable> {
 			double j = (double) (timestampFuture-timestampCurrent); 
 			p = i/j;
 			
-			if (p < 0.0) throw new RuntimeException("interpolation cannot be < 0.0 ("+p+")");
-			if (p > 1.0) throw new RuntimeException("interpolation cannot be > 1.0 ("+p+")");
-			log.info("i = "+i);
-			log.info("j = "+j);
-			log.info("p = "+p);
+			//if (p < 0.0) throw new RuntimeException("interpolation cannot be < 0.0 ("+p+")");
+			//if (p > 1.0) throw new RuntimeException("interpolation cannot be > 1.0 ("+p+")");
+			if (p < 0.0) p = 0.0;
+			if (p > 1.0) p = 1.0;
 			
 			int xInter = (int)((m.getPastX()*p) + (m.getX()*(1.0-p)));
 			int yInter = (int)((m.getPastY()*p) + (m.getY()*(1.0-p)));

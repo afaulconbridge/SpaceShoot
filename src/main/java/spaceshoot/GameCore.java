@@ -21,10 +21,9 @@ public class GameCore {
 	
 	protected Rectangle playerRect = new Rectangle(50,(768/2)-13 ,26,19 );
 	
-	protected Long timestampPast;
 	protected Long timestampCurrent;
 	protected Long timestampFuture;
-	public final Long FRAMEINTERVALNANO = 100000000L / 10;
+	public final Long FRAMEINTERVALNANO = 1000000000L / 10;
 
     private Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -33,7 +32,6 @@ public class GameCore {
 		moveSystem = new MoveSystem();
 		entitySystemManager.register(moveSystem);
 		timestampCurrent = System.nanoTime();
-		timestampPast = timestampCurrent - FRAMEINTERVALNANO; //estimate
 		timestampFuture = timestampCurrent + FRAMEINTERVALNANO; //estimate
 	}
 	
@@ -45,11 +43,6 @@ public class GameCore {
 	public EntitySystemManager getEntitySystemManager() {
 		return entitySystemManager;
 	}
-
-	public Long getTimestampPast() {
-		return timestampPast;
-	}
-
 
 	public Long getTimestampCurrent() {
 		return timestampCurrent;
@@ -66,21 +59,11 @@ public class GameCore {
 	 * that simulates one simulation step
 	 */
 	public void run(long timestampSimStart) {
-    	long timeStart = System.nanoTime();
     	
-		timestampPast = timestampCurrent;
 		timestampCurrent = timestampSimStart;
 		timestampFuture = timestampSimStart + FRAMEINTERVALNANO; //estimate
 		
 		moveSystem.processAll();
-
-    	long timeEnd = System.nanoTime();
-    	long interval = timeEnd-timeStart;
-    	int fps = (int) (1000000000L/interval);
-        log.trace("SIM ("+fps+"fps) ("+(interval/1000)+"ms)");
-        log.trace("past time    :"+timestampPast);
-        log.trace("current time :"+timestampCurrent);
-        log.trace("future time  :"+timestampFuture);
 	}
 	
 	public static GameCore create() {

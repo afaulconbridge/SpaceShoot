@@ -49,24 +49,59 @@ public class SpaceShootMain {
         GameCore core = GameCore.create();
 		GameRenderer renderer = new GameRenderer(core);
 		
-
-	
 		//create some dummy enemies for testing
 		EnemyShip.create(core.getEntitySystemManager(), "baddie", 500,50, 27,21 , -1, 0);
 						
-		long timeStepStartLast = 0;
-		while(true) {
-			long timeStepStart = System.nanoTime();
-			log.info("timeStepStart = "+timeStepStart);
-			log.info("timeStepInterval = "+(timeStepStart-timeStepStartLast));
-			timeStepStartLast = timeStepStart;
-			//limit sim to a certain FPS
-			if (timeStepStart > core.getTimestampFuture()) {
-				core.run(timeStepStart);
-			}
-				
-			//now render
 
+		Thread threadSim = new Thread(new SimRunnable(core));
+		threadSim.start();
+		
+		Thread threadRenderer = new Thread(new RendererRunnable(frame, renderer));
+		threadRenderer.start();
+	}
+	
+	protected class SimRunnable implements Runnable {
+
+		private final GameCore core;
+		
+		public SimRunnable(GameCore core) {
+			this.core = core;
+		}
+		
+		@Override
+		public void run() {
+			while (true) {
+				long timeStepStart = System.nanoTime();
+				core.run(timeStepStart);
+				long timeStepEnd = System.nanoTime();
+				int intervalMs = (int)((timeStepEnd-timeStepStart) / 1000);
+				log.info("Sim interval "+intervalMs+"ms");
+				int sleep = 100-intervalMs;
+				if (sleep > 0) {
+					try {
+						Thread.sleep(100-intervalMs);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (RuntimeException e) {
+						throw e;
+					}
+				}
+			}
+		}
+	}
+	
+	protected class RendererRunnable implements Runnable {
+		
+		private final JFrame frame;
+		private final GameRenderer renderer;
+		
+		public RendererRunnable(JFrame frame, GameRenderer renderer) {
+			this.frame = frame;
+			this.renderer = renderer;
+		}
+
+		private void render(long timeStepStart) {
 	        BufferStrategy bufferStrategy = frame.getBufferStrategy();
 	        Graphics g = null;
 	        try {
@@ -100,11 +135,27 @@ public class SpaceShootMain {
 		        	g = null;
 		        }
 	        }
-			
-	        //TODO maybe sleep?
-	        try { Thread.sleep(10); } catch (Exception e) {}
-	        
 		}
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while (true) {
+				long timeStepStart = System.nanoTime();
+				render(timeStepStart);
+				long timeStepEnd = System.nanoTime();
+				long intervalMs = (timeStepEnd-timeStepStart) / 1000;
+				log.info("Render interval "+intervalMs+"ms");
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (RuntimeException e) {
+					throw e;
+				}
+			}			
+		}
+		
 	}
-	
 }
