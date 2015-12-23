@@ -1,6 +1,7 @@
 package spaceshoot.entity.systems;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class RenderSystem extends AbstractEntitySystem<Renderable> {
 	public void process(Renderable t) {
 		
 		//System.out.println("Drawing "+t.getImageName());
-		BufferedImage image = imageLoader.getImage(t.getImageName());
+		Image image = imageLoader.getImageVolatile(t.getImageName());
 		//If its a moving thing, interpolate based on position
 		if (t instanceof Move2DInt) {
 			Move2DInt m = (Move2DInt) t;

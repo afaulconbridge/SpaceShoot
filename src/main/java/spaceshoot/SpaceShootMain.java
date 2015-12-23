@@ -1,4 +1,4 @@
-package spaceshoot.main;
+package spaceshoot;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -18,12 +18,12 @@ import spaceshoot.GameCore;
 import spaceshoot.GameRenderer;
 import spaceshoot.entity.entities.EnemyShip;
 
-public class Main {
+public class SpaceShootMain {
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
 	
 	public static void main(String[] args) {
-		new Main().run();
+		new SpaceShootMain().run();
 	}
 	
 	public void run() {
@@ -88,7 +88,7 @@ public class Main {
 	            //call the game renderer to do the heavy drawing
 	            renderer.render(gg2, timeStepStart);
 	            
-	            //make sure we dispose of the nested grapics every frame
+	            //make sure we dispose of the nested graphics every frame
 	            gg2.dispose();
 	            
 	            //flip to next buffer
@@ -102,6 +102,7 @@ public class Main {
 	        }
 			
 	        //TODO maybe sleep?
+	        try { Thread.sleep(10); } catch (Exception e) {}
 	        
 		}
 	}

@@ -3,6 +3,7 @@ package spaceshoot;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
@@ -43,7 +44,8 @@ public class GameRenderer {
 		renderSystem.setGraphics2D(null);
 		
 		//draw the player last so they are on top
-		BufferedImage playerImage = imageLoader.getImage("player");
+		//Image playerImage = imageLoader.getImageBuffered("player");
+		Image playerImage = imageLoader.getImageVolatile("player");
 		gg.drawImage(playerImage, core.playerRect.x, core.playerRect.y, null);
     	
 		long timeEnd = System.nanoTime();
