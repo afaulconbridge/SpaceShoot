@@ -60,11 +60,11 @@ public class SpaceShootMain {
 			log.info("timeStepStart = "+timeStepStart);
 			log.info("timeStepInterval = "+(timeStepStart-timeStepStartLast));
 			timeStepStartLast = timeStepStart;
-			//limit sim to 30 FPS
+			//limit sim to a certain FPS
 			if (timeStepStart > core.getTimestampFuture()) {
 				core.run(timeStepStart);
 			}
-			
+				
 			//now render
 
 	        BufferStrategy bufferStrategy = frame.getBufferStrategy();

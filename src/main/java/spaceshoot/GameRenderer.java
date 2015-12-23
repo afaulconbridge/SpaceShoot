@@ -51,7 +51,7 @@ public class GameRenderer {
 		long timeEnd = System.nanoTime();
     	long interval = timeEnd-timeStart;
     	int fps = (int) (1000000000L/interval);
-        log.trace("RENDER ("+fps+"fps)");
+        log.trace("RENDER ("+fps+"fps) ("+(interval/1000)+"ms)");
         log.trace("start time    :"+timestampRenderStart);
 	}
 

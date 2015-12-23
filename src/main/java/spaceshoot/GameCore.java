@@ -24,7 +24,7 @@ public class GameCore {
 	protected Long timestampPast;
 	protected Long timestampCurrent;
 	protected Long timestampFuture;
-	public final Long FRAMEINTERVALNANO = 100000000L / 30;
+	public final Long FRAMEINTERVALNANO = 100000000L / 10;
 
     private Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -77,7 +77,7 @@ public class GameCore {
     	long timeEnd = System.nanoTime();
     	long interval = timeEnd-timeStart;
     	int fps = (int) (1000000000L/interval);
-        log.trace("SIM ("+fps+"fps)");
+        log.trace("SIM ("+fps+"fps) ("+(interval/1000)+"ms)");
         log.trace("past time    :"+timestampPast);
         log.trace("current time :"+timestampCurrent);
         log.trace("future time  :"+timestampFuture);
