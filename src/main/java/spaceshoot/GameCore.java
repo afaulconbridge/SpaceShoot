@@ -19,6 +19,8 @@ public class GameCore {
 	
 	protected final MoveSystem moveSystem;
 	
+	protected PressedKeyListener pressedKeyListener;
+	
 	protected Rectangle playerRect = new Rectangle(50,(768/2)-13 ,26,19 );
 	
 	protected Long timestampCurrent;
@@ -36,6 +38,16 @@ public class GameCore {
 	}
 	
 	
+	public PressedKeyListener getPressedKeyListener() {
+		return pressedKeyListener;
+	}
+
+
+	public void setPressedKeyListener(PressedKeyListener pressedKeyListener) {
+		this.pressedKeyListener = pressedKeyListener;
+	}
+
+
 	public Rectangle getPlayerRect() {
 		return playerRect; //TODO return an unmodifiable copy
 	}

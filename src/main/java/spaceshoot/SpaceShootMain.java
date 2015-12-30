@@ -44,9 +44,13 @@ public class SpaceShootMain {
         }
 
         frame.createBufferStrategy(2);
+        
+        PressedKeyListener pressedKeyListener = new PressedKeyListener();
+        frame.addKeyListener(pressedKeyListener);
 
         //setup the required sim and renderer
         GameCore core = GameCore.create();
+        core.setPressedKeyListener(pressedKeyListener);
 		GameRenderer renderer = new GameRenderer(core);
 		
 		//create some dummy enemies for testing
