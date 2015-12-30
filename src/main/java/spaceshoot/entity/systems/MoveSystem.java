@@ -21,6 +21,17 @@ public class MoveSystem extends AbstractEntitySystem<Move2DInt> {
 		t.setFutureY(t.getFutureY()+t.getSpeedY());
 		
 		//TODO check if moved off-screen, and delete accordingly
+		
+		if (t.getSpeedX() < 0) {
+		   //moving left
+		} else if (t.getSpeedX() > 0) {
+			//moving right
+		} else if (t.getSpeedY() < 0) {
+			//moving up
+		} else if (t.getSpeedY() > 0) {
+			//moving down
+		}
+		
 	}
 
 	@Override
